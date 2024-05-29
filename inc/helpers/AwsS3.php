@@ -96,7 +96,7 @@ class AwsS3 extends CodeMessage
         }
     }
 
-    public function putBase64Object(string $key, string $file_base64, string $file_mime)
+    public function putObjectBase64(string $key, string $file_base64, string $file_mime)
     {
         $this->resetCodeMessage();
 
