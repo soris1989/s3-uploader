@@ -96,18 +96,13 @@ class AwsS3 extends CodeMessage
         }
     }
 
-    public function putObjectBase64(string $key, string $file_base64, string $file_mime)
+    public function putObjectBase64(string $key, string $file_base64)
     {
         $this->resetCodeMessage();
 
         try {
-            $result = $this->s3->putObject([
-                'Body' => $file_base64,
-                'Bucket' => $this->bucket,
-                'Key' => $key,
-                'ContentType' => $file_mime,
-            ]);
-
+            $file_data = base64_decode($file_base64);
+            $result = $this->s3->upload($this->bucket, $key, $file_data);
             return $result;
         } catch (S3Exception $e) {
             $this->setCodeMessage(0, $e->getMessage());

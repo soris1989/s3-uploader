@@ -1094,3 +1094,28 @@ function get_previous_page_url()
     // }
     return $previous;
 }
+
+function is_datauri(string $value)
+{
+    $args = explode(',', $value);
+    if (count($args) > 1) {
+        $base64 = $args[1];
+        return base64_encode(base64_decode($base64, true)) === $base64;
+    }
+    return false;
+}
+
+function get_datauri_data(string $value)
+{
+    $args = explode(',', $value);
+    if (count($args) > 1) {
+        $base64 = $args[1];
+
+        // assume you've set $image_uri to be the URI from the database
+        $file_parts = explode(";", $args[0]); // split on the ; after the mime type
+        $mime_type = substr($file_parts[0], 5); // get the information after the data: text
+
+        return [$base64, $mime_type];
+    }
+    return null;
+}

@@ -37,7 +37,7 @@ require_once __DIR__ . '/./inc/upload_base64.php';
                 <form method="post" action="" enctype="multipart/form-data">
                     <div class="form-group">
                         <label><b>הדבק קובץ בפורמט של Base64:</b></label>
-                        <textarea name="file_upload" class="form-control" rows="10" required></textarea>
+                        <textarea name="file_base64" class="form-control" rows="10" required><?= isset($_POST['file_base64']) ? trim($_POST['file_base64']) : '' ?></textarea>
                     </div>
                     <div class="form-group mt-2">
                         <button type="submit" class="btn btn-primary" name="submit" value="Upload">שלח טופס</button>

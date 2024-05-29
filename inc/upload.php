@@ -29,7 +29,7 @@ if (isset($_POST['submit'])) {
         $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
 
         // Allow certain file formats 
-        $allowTypes = array('pdf', 'doc', 'docx', 'xls', 'xlsx', 'jpg', 'png', 'jpeg', 'gif');
+        $allowTypes = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'jpg', 'png', 'jpeg', 'gif', 'svg'];
         if (in_array($file_ext, $allowTypes)) {
             // File temp source 
             $file_temp_src = $_FILES["file_upload"]["tmp_name"];

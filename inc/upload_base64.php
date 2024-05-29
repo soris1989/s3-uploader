@@ -22,21 +22,24 @@ if (isset($_POST['delete_file'])) {
 }
 
 if (isset($_POST['submit'])) {
+    // get data from request body
+    $file_base64 = trim($_POST['file_base64']);
+
     // Check whether user inputs are empty 
-    if (!empty($_FILES["file_upload"]["name"])) {
-        // File info 
-        $file_name = basename($_FILES["file_upload"]["name"]);
-        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+    if ($file_base64) {
+        if (is_datauri($file_base64)) {
+            [$base64, $mime_type] = get_datauri_data($file_base64);
 
-        // Allow certain file formats 
-        $allowTypes = array('pdf', 'doc', 'docx', 'xls', 'xlsx', 'jpg', 'png', 'jpeg', 'gif');
-        if (in_array($file_ext, $allowTypes)) {
-            // File temp source 
-            $file_temp_src = $_FILES["file_upload"]["tmp_name"];
+            // File info 
+            $file_ext = mime2ext($mime_type);
+            $file_name = 'file_' . time() . ".$file_ext";
 
-            if (is_uploaded_file($file_temp_src)) {
+            // Allow certain file formats 
+            $allowTypes = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'jpg', 'png', 'jpeg', 'gif', 'svg'];
+            if (in_array($file_ext, $allowTypes)) {
+
                 // Upload file to S3 bucket 
-                $result = $s3->putObject($file_name, $file_temp_src);
+                $result = $s3->putObjectBase64($file_name, $base64);
                 if ($result) {
                     $result_arr = $result->toArray();
 
@@ -56,10 +59,10 @@ if (isset($_POST['submit'])) {
                     $statusMsg = $api_error;
                 }
             } else {
-                $statusMsg = "העלאת הקובץ נכשלה!";
+                $statusMsg = 'הקובץ חייב להיות באחד מהפורמטים הבאים: Pdf/Word/Excel/Image.';
             }
         } else {
-            $statusMsg = 'הקובץ חייב להיות באחד מהפורמטים הבאים: Pdf/Word/Excel/Image.';
+            $statusMsg = 'קובץ לא בפורמט של Base64.';
         }
     } else {
         $statusMsg = 'לא נבחר קובץ להעלאה.';
